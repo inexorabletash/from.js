@@ -229,7 +229,6 @@
 
     // groupBy(keySelector)
     // groupBy(keySelector, comparer)
-    // TODO: ...
     groupBy: {value: function(keySelector, comparer) {
       function* $(it) {
         let m = map(comparer);
