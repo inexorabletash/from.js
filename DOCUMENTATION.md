@@ -70,6 +70,7 @@ from([1, 2, 3]).elementAt(0); // 1
 from([1, 2, 3]).elementAt(-1); // throws RangeError
 from([1, 2, 3]).elementAt(7); // throws RangeError
 ```
+Throws **RangeError** if index is less than 0 or greater than the length of the sequence.
 
 ### `elementAtOrDefault(index, value)` &rarr; _any_
 ```js
@@ -90,6 +91,7 @@ If specified, _`comparer`_ must be an _equality comparer_ and return `true` if t
 from([1, 2, 3]).first(); // 1
 from([1, 2, 3]).first(i => i > 1); // 2
 ```
+Throws **RangeError** if the sequence is empty.
 
 ### `firstOrDefault(value[, predicate])` &rarr; _any_
 ```js
@@ -132,6 +134,7 @@ If specified, _`comparer`_ must be an _equality comparer_ and return `true` if t
 from([1, 2, 3]).last(); // 3
 from([1, 2, 3]).last(i => i < 2); // 1
 ```
+Throws **RangeError** if the sequence is empty.
 
 ### `lastOrDefault(value[, predicate])` &rarr; _any_
 ```js
@@ -146,12 +149,14 @@ from([1, 2, 3]).lastOrDefault(NaN, i => i > 5); // NaN
 from([1, 2, 3]).max(); // 3
 from([1, 2, 3]).max(i=>-i); // 1
 ```
+Throws **RangeError** if the sequence is empty.
 
 ### `min([selector])` &rarr; _any_
 ```js
 from([1, 2, 3]).min(); // 1
 from([1, 2, 3]).min(i=>-i); // 3
 ```
+Throws **RangeError** if the sequence is empty.
 
 ### `orderBy(keySelector[, comparer])` &rarr; _OrderedEnumerable_
 ```js
@@ -211,6 +216,7 @@ from([1, 2]).single(); // throws RangeError
 from([1, 2]).single(i => i > 1); // 2
 from([1, 2, 3]).single(i => i > 1); // throws RangeError
 ```
+Throws **RangeError** if the sequence is empty or has more than one element.
 
 ### `singleOrDefault(value[, predicate])` &rarr; _any_
 ```js
@@ -221,6 +227,7 @@ from([1, 2]).singleOrDefault(NaN, i => i > 1); // 2
 from([1, 2]).singleOrDefault(NaN, i => i < 1); // NaN
 from([1, 2]).singleOrDefault(NaN, i => i > 0); // throws RangeError
 ```
+Throws **RangeError** if the sequence has more than one element.
 
 ### `skip(count)` &rarr; _Enumerable_
 ```js
