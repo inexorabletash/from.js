@@ -78,8 +78,9 @@ arguments; these come in two different flavors. An _equality comparer_ must retu
 The default _equality comparer_ is equivalent to `Object.is()`. The default
 _order comparer_ is equivalent to `(a, b) => (a < b) ? -1 : (b < a) ? 1 : 0`
 
-For complex operations like `groupBy` and `join`, the use of a custom comparer will dramatically slow down the operation. A comparer that does not properly reflect identity (i.e. `a === a`) will result in undefined behavior.
+For complex operations like `groupBy` and `join`, the use of a custom comparer will dramatically slow down the operation; i.e. complexity increases from O(1) to O(n). A comparer that does not properly reflect identity (i.e. `a === a`) will result in undefined behavior.
 
+Some methods (first, last, single, elementAt, min, max) throw a **RangeError** if the bounds are exceeded.
 
 ### Requirements
 ECMAScript 2015 (ES6) - support for:
