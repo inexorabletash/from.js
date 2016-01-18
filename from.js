@@ -1,10 +1,6 @@
 (function(global) {
   'use strict';
 
-  // TODO: For performance, introduce an ArrayEnumerable subclass
-  // produced when the input is an array, which optimizes elementAt,
-  // last, count, etc.
-
   function order(a, b) { return a < b ? -1 : b < a ? 1 : 0; };
 
   // Return a Set, or slow O(n) partial impl. if a custom comparer is required.
