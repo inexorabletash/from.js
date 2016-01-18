@@ -59,7 +59,7 @@ union
 where
 zip
 
-See the [full documentation](Documentation.md) for details on each method.
+See the [full documentation](DOCUMENTATION.md) for details on each method.
 
 ### Basic usage
 Call the global `from()` function with an _iterable_ (array, generator, etc) to
