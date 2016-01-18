@@ -62,6 +62,8 @@
     // aggregate(func, seed)
     // aggregate(func, seed, resultSelector)
     aggregate: {value: function(func, seed, resultSelector) {
+      if (resultSelector && typeof resultSelector !== 'function')
+        throw TypeError('resultSelector must be a function');
       let init, agg;
       if (arguments.length > 1) {
         init = false;
@@ -82,6 +84,8 @@
 
     // all(predicate)
     all: {value: function(predicate) {
+      if (predicate && typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
       for (let i of this.it) {
         if (!predicate(i))
           return false;
@@ -92,6 +96,8 @@
     // any()
     // any(predicate)
     any: {value: function(predicate) {
+      if (predicate && typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
       for (let i of this.it) {
         if (predicate(i))
           return true;
@@ -102,6 +108,8 @@
     // average()
     // average(selector)
     average: {value: function(selector) {
+      if (selector && typeof selector !== 'function')
+        throw TypeError('selector must be a function');
       let sum = 0, count = 0;
       for (let i of this.it) {
         sum += selector ? selector(i) : i;
@@ -124,6 +132,8 @@
     // contains(x)
     // contains(x, comparer)
     contains: {value: function(value, comparer) {
+      if (comparer && typeof comparer !== 'function')
+        throw TypeError('comparer must be a function');
       comparer = comparer || Object.is;
       for (let i of this.it) {
         if (comparer(i, value))
@@ -135,6 +145,8 @@
     // count()
     // count(predicate)
     count: {value: function(predicate) {
+      if (predicate && typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
       let n = 0;
       for (let i of this.it)
         if (!predicate || predicate(i)) ++n;
@@ -159,6 +171,8 @@
     // distinct()
     // distinct(comparer)
     distinct: {value: function(comparer) {
+      if (comparer && typeof comparer !== 'function')
+        throw TypeError('comparer must be a function');
       function* $(it) {
         let s = set(comparer);
         for (let i of it) {
@@ -195,6 +209,8 @@
     // except(iterable)
     // except(iterable, comparer)
     except: {value: function (iterable, comparer) {
+      if (comparer && typeof comparer !== 'function')
+        throw TypeError('comparer must be a function');
       function* $(it) {
         let s = set(comparer);
         for (let i of iterable)
@@ -210,6 +226,8 @@
     // first()
     // first(predicate)
     first: {value: function(predicate) {
+      if (predicate && typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
       for (let i of this.it) {
         if (!predicate || predicate(i))
           return i;
@@ -220,6 +238,8 @@
     // firstOrDefault()
     // firstOrDefault(predicate)
     firstOrDefault: {value: function(value, predicate) {
+      if (predicate && typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
       for (let i of this.it) {
         if (!predicate || predicate(i))
           return i;
@@ -230,6 +250,10 @@
     // groupBy(keySelector)
     // groupBy(keySelector, comparer)
     groupBy: {value: function(keySelector, comparer) {
+      if (typeof keySelector !== 'function')
+        throw TypeError('keySelector must be a function');
+      if (comparer && typeof comparer !== 'function')
+        throw TypeError('comparer must be a function');
       function* $(it) {
         let m = map(comparer);
         for (let i of it) {
@@ -246,6 +270,8 @@
     // intersect(iterable)
     // intersect(iterable, comparer)
     intersect: {value: function (iterable, comparer) {
+      if (comparer && typeof comparer !== 'function')
+        throw TypeError('comparer must be a function');
       function* $(it) {
         let m = map(comparer);
         for (let i of it)
@@ -265,6 +291,14 @@
     // join(inner, outerKeySelector, innerKeySelector, resultSelector)
     // join(inner, outerKeySelector, innerKeySelector, resultSelector, comparer)
     join: {value: function(inner, outerKeySelector, innerKeySelector, resultSelector, comparer) {
+      if (typeof outerKeySelector !== 'function')
+        throw TypeError('outerKeySelector must be a function');
+      if (typeof innerKeySelector !== 'function')
+        throw TypeError('innerKeySelector must be a function');
+      if (typeof resultSelector !== 'function')
+        throw TypeError('resultSelector must be a function');
+      if (comparer && typeof comparer !== 'function')
+        throw TypeError('comparer must be a function');
       function* $(it) {
         let m = map(comparer);
         for (let i of inner) {
@@ -286,6 +320,8 @@
     // last()
     // last(predicate)
     last: {value: function(predicate) {
+      if (predicate && typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
       let found = false, last = undefined;
       for (let i of this.it) {
         if (!predicate || predicate(i)) {
@@ -301,6 +337,8 @@
     // lastOrDefault(value)
     // lastOrDefault(value, predicate)
     lastOrDefault: {value: function(value, predicate) {
+      if (predicate && typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
       let found = false, last = undefined;
       for (let i of this.it) {
         if (!predicate || predicate(i)) {
@@ -314,6 +352,8 @@
     // max()
     // max(selector)
     max: {value: function(selector) {
+      if (selector && typeof selector !== 'function')
+        throw TypeError('selector must be a function');
       let first = true, max = undefined, found = undefined;
       for (let i of this.it) {
         let v = selector ? selector(i) : i;
@@ -331,6 +371,8 @@
     // min()
     // min(selector)
     min: {value: function(selector) {
+      if (selector && typeof selector !== 'function')
+        throw TypeError('selector must be a function');
       let first = true, min = undefined, found = undefined;
       for (let i of this.it) {
         let v = selector ? selector(i) : i;
@@ -348,6 +390,10 @@
     // orderBy(keySelector)
     // orderBy(keySelector, comparer)
     orderBy: {value: function(keySelector, comparer) {
+      if (typeof keySelector !== 'function')
+        throw TypeError('keySelector must be a function');
+      if (comparer && typeof comparer !== 'function')
+        throw TypeError('comparer must be a function');
       comparer = comparer || order;
       return new OrderedEnumerable(
         this.it, (a, b) => comparer(keySelector(a), keySelector(b)));
@@ -356,6 +402,10 @@
     // orderByDescending(keySelector)
     // orderByDescending(keySelector, comparer)
     orderByDescending: {value: function(keySelector, comparer) {
+      if (typeof keySelector !== 'function')
+        throw TypeError('keySelector must be a function');
+      if (comparer && typeof comparer !== 'function')
+        throw TypeError('comparer must be a function');
       comparer = comparer || order;
       return new OrderedEnumerable(
         this.it, (a, b) => -comparer(keySelector(a), keySelector(b)));
@@ -374,6 +424,8 @@
 
     // select(selector)
     select: {value: function(selector) {
+      if (typeof selector !== 'function')
+        throw TypeError('selector must be a function');
       function* $(it) {
         let index = 0;
         for (let i of it)
@@ -399,6 +451,8 @@
     // sequenceEqual(iterator)
     // sequenceEqual(iterator, comparer)
     sequenceEqual: {value: function(iterator, comparer) {
+      if (comparer && typeof comparer !== 'function')
+        throw TypeError('comparer must be a function');
       comparer = comparer || Object.is;
       let it1 = this.it, it2 = iterator[Symbol.iterator]();
       let a = it1.next(), b = it2.next();
@@ -412,6 +466,8 @@
     // single()
     // single(predicate)
     single: {value: function(predicate) {
+      if (predicate && typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
       let found, count = 0;
       for (let i of this.it) {
         if (predicate && !predicate(i))
@@ -432,6 +488,8 @@
     // singleOrDefault(value)
     // singleOrDefault(value, predicate)
     singleOrDefault: {value: function(value, predicate) {
+      if (predicate && typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
       let found, count = 0;
       for (let i of this.it) {
         if (predicate && !predicate(i))
@@ -485,6 +543,8 @@
 
     // takeWhile(predicate)
     takeWhile: {value: function(predicate) {
+      if (typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
       function* $(it) {
         let index = 0;
         for (let i of it) {
@@ -500,6 +560,8 @@
     // union(iterable)
     // union(iterable, comparer)
     union: {value: function (iterable, comparer) {
+      if (comparer && typeof comparer !== 'function')
+        throw TypeError('comparer must be a function');
       function* $(it) {
         let s = set(comparer);
         for (let i of it) {
@@ -520,6 +582,8 @@
 
     // where(predicate)
     where: {value: function(predicate) {
+      if (typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
       function* $(it) {
         let index = 0;
         for (let i of it) {
@@ -598,6 +662,10 @@
     // thenBy(keySelector)
     // thenBy(keySelector, comparer)
     thenBy: {value: function(keySelector, comparer) {
+      if (typeof keySelector !== 'function')
+        throw TypeError('keySelector must be a function');
+      if (comparer && typeof comparer !== 'function')
+        throw TypeError('comparer must be a function');
       comparer = comparer || order;
       this.funcs.push((a, b) => comparer(keySelector(a), keySelector(b)));
       return this;
@@ -606,6 +674,10 @@
     // thenByDescending(keySelector)
     // thenByDescending(keySelector, comparer)
     thenByDescending: {value: function(keySelector, comparer) {
+      if (typeof keySelector !== 'function')
+        throw TypeError('keySelector must be a function');
+      if (comparer && typeof comparer !== 'function')
+        throw TypeError('comparer must be a function');
       comparer = comparer || order;
       this.funcs.push((a, b) => -comparer(keySelector(a), keySelector(b)));
       return this;
