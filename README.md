@@ -6,7 +6,7 @@ extensions for enumerable types. A few examples:
 
 ```js
 from(people).join(pets, o=>o.id, p=>p.owner_id, (o,p)=>o.name + ' ♥ ' + p.name);
-from(employees).where(e=>e.salary > 50000).select(e.name);
+from(employees).where(e=>e.isFullTime).select(e.name);
 from(points).orderBy(p=>p.x).thenBy(p=>p.y).select(...);
 from(employees).select(e.salary).sum();
 ```
