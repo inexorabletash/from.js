@@ -77,7 +77,7 @@ By category:
 See the [full documentation](DOCUMENTATION.md) for details on each method.
 
 ### Basic usage
-Call the global `from()` function with an _iterable_ (array, generator, etc) to
+Call the global `from()` function with an _iterable_ (array, set, generator, etc) to
 get an _enumerable_ which wraps the _iterable_ and exposes several new methods.
 Those methods may return a simple value or another _enumerable_ for chained operation. An _enumerable_ is itself an _iterable_ so it can be traversed with `for..of` syntax
 or converted to an array using `Array.from()`.
