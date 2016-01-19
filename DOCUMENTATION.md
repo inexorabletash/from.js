@@ -14,7 +14,7 @@ from([1,2,3,4]).aggregate((a, b) => a + b, 0, r => '$' + r); // '$10'
 ```
 Like `Array.prototype.reduce()` the optional seed is always the second argument.
 
-### `all(predicate)` &rarr; _Enumerable_
+### `all(predicate)` &rarr; _Boolean_
 ```js
 from([1,2,3,4]).all(i => i > 0); // true
 from([1,2,3,4]).all(i => i < 3); // false
