@@ -17,6 +17,8 @@ so you can write code like `from r in data where r.b select r.b`. No new syntax 
 
 ### Methods
 
+All methods:
+
 aggregate
 all
 any
@@ -59,6 +61,17 @@ thenByDescending
 union
 where
 zip
+
+By category:
+
+* **Aggregators:** aggregate average count max min sum
+* **Combiners:** concat distinct except intersect join union zip
+* **Constructors:** empty range repeat
+* **Extractors:** elementAt elementAtOrDefault first firstOrDefault last lastOrDefault single singleOrDefault
+* **Filters:** skip skipWhile take takeWhile where
+* **Qualifiers:** all any contains sequenceEqual
+* **Sorters:** orderBy orderByDescending thenBy thenByDescending
+* **Transformers:** defaultIfEmpty groupBy reverse select selectMany
 
 See the [full documentation](DOCUMENTATION.md) for details on each method.
 
