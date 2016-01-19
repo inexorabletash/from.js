@@ -50,6 +50,7 @@ sequenceEqual
 single
 singleOrDefault
 skip
+skipWhile
 sum
 take
 takeWhile

@@ -518,6 +518,25 @@
       return new Enumerable($(this.it));
     }, writable: true, enumerable: false, configurable: true},
 
+    // skipWhile(predicate)
+    skipWhile: {value: function(predicate) {
+      if (typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
+      function* $(it) {
+        let index = 0;
+        for (let i of it) {
+          if (!predicate(i, index++)) {
+            yield i;
+            break;
+          }
+        }
+        for (let i of it) {
+          yield i;
+        }
+      }
+      return new Enumerable($(this.it));
+    }, writable: true, enumerable: false, configurable: true},
+
     // sum()
     // sum(selector)
     sum: {value: function(selector) {

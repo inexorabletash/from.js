@@ -236,6 +236,11 @@ assert_equals('from(a).skip(2)', [2, 3, 4]);
 assert_nothrow('from(lazy()).skip(2)');
 assert_nothrow('from(a).skip(2).select(i=>i)');
 
+assert_equals('from(a).skipWhile(i=>i<2)', [2, 3, 4]);
+assert_equals('from(a).skipWhile((v,i)=>i<2)', [2, 3, 4]);
+assert_nothrow('from(lazy()).skipWhile(i=>i<2)');
+assert_nothrow('from(a).skipWhile(i=>i<2).select(i=>i)');
+
 assert_equals('from(a).sum()', 10);
 assert_equals('from(a).sum(i=>i*i)', 30);
 

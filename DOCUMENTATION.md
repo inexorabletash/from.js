@@ -234,6 +234,12 @@ Throws **RangeError** if the sequence has more than one element.
 from([1, 2, 3, 4]).skip(2); // 3, 4
 ```
 
+### `skipWhile(predicate)` &rarr; _Enumerable_
+```js
+from([1, 2, 3, 4]).skipWhile(i => i < 2); // 2, 3, 4
+```
+For each item, _`predicate`_ is called with the item as the first argument and index as the second argument.
+
 ### `sum([selector])` &rarr; _Number_
 ```js
 from([1, 2, 3, 4]).sum(); // 10
