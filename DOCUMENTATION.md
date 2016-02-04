@@ -277,7 +277,7 @@ For each item, _`selector`_ is called with the item as the first argument and in
 
 ### `zip(iterable)` &rarr; _Enumerable of [any, any]_
 ```js
-from([1, 2, 3]).zip([4, 5, 6]); // [1, 4], [2, 5], [3, 6]
+from([1, 2, 3]).zip([4, 5, 6]); // « [1, 4], [2, 5], [3, 6] »
 ```
 
 ## _Enumerable_ statics
