@@ -166,22 +166,22 @@ Throws **RangeError** if the sequence is empty.
 ### `orderBy(keySelector[, comparer])` &rarr; _OrderedEnumerable_
 ```js
 from([{id: 1, name: 'bob'}, {id: 2, name: 'alice'}]).orderBy(r => r.name);
-// [{id: 2, name: 'alice'}, {id: 1, name: 'bob'}]
+// « [{id: 2, name: 'alice'}, {id: 1, name: 'bob'}] »
 
 from([{id: 1, name: 'Bob'}, {id: 2, name: 'alice'}])
   .orderBy(r => r.name, (a, b) => a.localeCompare(b));
-// [{id: 2, name: 'alice'}, {id: 1, name: 'Bob'}]
+// « [{id: 2, name: 'alice'}, {id: 1, name: 'Bob'}] »
 ```
 If specified, _`comparer`_ must be an _order comparer_ and return a number; negative if the first argument is greater than the second argument, a positive if the first argument is less than the second argument, or zero otherwise.
 
 ### `orderByDescending(keySelector[, comparer])` &rarr; _OrderedEnumerable_
 ```js
 from([{id: 1, name: 'bob'}, {id: 2, name: 'alice'}]).orderByDescending(r => r.name);
-// [{id: 1, name: 'bob'}, {id: 2, name: 'alice'}]
+// « [{id: 1, name: 'bob'}, {id: 2, name: 'alice'}] »
 
 from([{id: 1, name: 'Bob'}, {id: 2, name: 'alice'}])
   .orderByDescending(r => r.name, (a, b) => a.localeCompare(b));
-// [{id: 1, name: 'Bob'}, {id: 2, name: 'alice'}]
+// « [{id: 1, name: 'Bob'}, {id: 2, name: 'alice'}] »
 ```
 If specified, _`comparer`_ must be an _order comparer_ and return a number; negative if the first argument is greater than the second argument, a positive if the first argument is less than the second argument, or zero otherwise.
 
