@@ -113,8 +113,8 @@ from([
   {name: 'fido', owner: 'bob'},
   {name: 'speak', owner: 'alice'}
 ]).groupBy(pet => pet.owner);
-//   ["alice", [{name: "daisy", owner: "alice"}, {name: "speak", owner: "alice"}]],
-//   ["bob", [{name: "fido", owner: "bob"}]]
+//  « ["alice", [{name: "daisy", owner: "alice"}, {name: "speak", owner: "alice"}]],
+//    ["bob", [{name: "fido", owner: "bob"}]] »
 ```
 If specified, _`comparer`_ must be an _equality comparer_ and return `true` if the two arguments should be considered the same, `false` otherwise.
 
