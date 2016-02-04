@@ -2,7 +2,7 @@
 
 ### `from(iterable)` &rarr; _Enumerable_
 ```js
-for (x of from([1, 2, 3]).select(i => i + 7)) { console.log(x); } // 8, 9, 10
+for (x of from([1, 2, 3]).select(i => i + 7)) { console.log(x); } // &laquo; 8, 9, 10 &raquo;
 ```
 
 ## _Enumerable_ methods
