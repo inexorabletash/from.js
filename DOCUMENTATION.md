@@ -100,10 +100,10 @@ Throws **RangeError** if the sequence is empty.
 
 ### `firstOrDefault(value[, predicate])` &rarr; _any_
 ```js
-from([1, 2, 3]).firstOrDefault(); // 1
+from([1, 2, 3]).firstOrDefault(0); // 1
 from([]).firstOrDefault(0); // 0
-from([1, 2, 3]).firstOrDefault(i => i > 1); // 2
-from([1, 2, 3]).firstOrDefault(NaN, i => i > 7, NaN); // NaN
+from([1, 2, 3]).firstOrDefault(NaN); // 1
+from([1, 2, 3]).firstOrDefault(NaN, i => i > 7); // NaN
 ```
 
 ### `groupBy(keySelector[, comparer])` &rarr; _Enumerable of [ key, [ values ... ] ]_
