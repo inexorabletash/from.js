@@ -63,13 +63,15 @@
 
   // class
 
-  function Enumerable(it) { this.it = it[Symbol.iterator](); }
-  Enumerable.prototype = Object.create(Object.prototype, {
+  class Enumerable {
+    constructor(it) {
+      this.it = it[Symbol.iterator]();
+    }
 
     // aggregate(func)
     // aggregate(func, seed)
     // aggregate(func, seed, resultSelector)
-    aggregate: {value: function(func, seed, resultSelector) {
+    aggregate(func, seed, resultSelector) {
       if (resultSelector && typeof resultSelector !== 'function')
         throw TypeError('resultSelector must be a function');
       let init, agg;
@@ -88,10 +90,10 @@
         }
       }
       return resultSelector ? resultSelector(agg) : agg;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // all(predicate)
-    all: {value: function(predicate) {
+    all(predicate) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       for (let i of this.it) {
@@ -99,11 +101,11 @@
           return false;
       }
       return true;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // any()
     // any(predicate)
-    any: {value: function(predicate) {
+    any(predicate) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       for (let i of this.it) {
@@ -111,11 +113,11 @@
           return true;
       }
       return false;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // average()
     // average(selector)
-    average: {value: function(selector) {
+    average(selector) {
       if (selector && typeof selector !== 'function')
         throw TypeError('selector must be a function');
       let sum = 0, count = 0;
@@ -124,10 +126,10 @@
         ++count;
       }
       return sum / count;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // concat(iterable)
-    concat: {value: function(iterable) {
+    concat(iterable) {
       function* $(it) {
         for (let i of it)
           yield i;
@@ -135,11 +137,11 @@
           yield i;
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // contains(x)
     // contains(x, comparer)
-    contains: {value: function(value, comparer) {
+    contains(value, comparer) {
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       comparer = comparer || Object.is;
@@ -148,21 +150,21 @@
           return true;
       }
       return false;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // count()
     // count(predicate)
-    count: {value: function(predicate) {
+    count(predicate) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       let n = 0;
       for (let i of this.it)
         if (!predicate || predicate(i)) ++n;
       return n;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // defaultIfEmpty(value)
-    defaultIfEmpty: {value: function(value) {
+    defaultIfEmpty(value) {
       function* $(it) {
         let empty = true;
         for (let i of it) {
@@ -173,16 +175,16 @@
           yield value;
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
 
     // distinct()
     // distinct(comparer)
-    distinct: {value: function(comparer) {
+    distinct(comparer) {
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       function* $(it) {
-        let s = set(comparer);
+        const s = set(comparer);
         for (let i of it) {
           if (!s.has(i)) {
             s.add(i);
@@ -191,10 +193,10 @@
         }
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // elementAt(index)
-    elementAt: {value: function(index) {
+    elementAt(index) {
       let c = 0;
       if (index < 0) throw RangeError('index out of bounds');
       for (let i of this.it) {
@@ -202,25 +204,25 @@
           return i;
       }
       throw RangeError('index out of bounds');
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // elementAtOrDefault(index, value)
-    elementAtOrDefault: {value: function(index, value) {
+    elementAtOrDefault(index, value) {
       let c = 0;
       for (let i of this.it) {
         if (index === c++)
           return i;
       }
       return value;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // except(iterable)
     // except(iterable, comparer)
-    except: {value: function (iterable, comparer) {
+    except (iterable, comparer) {
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       function* $(it) {
-        let s = set(comparer);
+        const s = set(comparer);
         for (let i of iterable)
           s.add(i);
         for (let i of it) {
@@ -229,11 +231,11 @@
         }
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // first()
     // first(predicate)
-    first: {value: function(predicate) {
+    first(predicate) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       for (let i of this.it) {
@@ -241,11 +243,11 @@
           return i;
       }
       throw RangeError('sequence is empty');
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // firstOrDefault()
     // firstOrDefault(predicate)
-    firstOrDefault: {value: function(value, predicate) {
+    firstOrDefault(value, predicate) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       for (let i of this.it) {
@@ -253,19 +255,19 @@
           return i;
       }
       return value;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // groupBy(keySelector)
     // groupBy(keySelector, comparer)
-    groupBy: {value: function(keySelector, comparer) {
+    groupBy(keySelector, comparer) {
       if (typeof keySelector !== 'function')
         throw TypeError('keySelector must be a function');
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       function* $(it) {
-        let m = map(comparer);
+        const m = map(comparer);
         for (let i of it) {
-          let k = keySelector(i);
+          const k = keySelector(i);
           if (!m.has(k)) m.set(k, []);
           m.get(k).push(i);
         }
@@ -273,15 +275,15 @@
           yield i;
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // intersect(iterable)
     // intersect(iterable, comparer)
-    intersect: {value: function (iterable, comparer) {
+    intersect (iterable, comparer) {
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       function* $(it) {
-        let m = map(comparer);
+        const m = map(comparer);
         for (let i of it)
           m.set(i, false);
         for (let i of iterable) {
@@ -294,11 +296,11 @@
         }
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // join(inner, outerKeySelector, innerKeySelector, resultSelector)
     // join(inner, outerKeySelector, innerKeySelector, resultSelector, comparer)
-    join: {value: function(inner, outerKeySelector, innerKeySelector, resultSelector, comparer) {
+    join(inner, outerKeySelector, innerKeySelector, resultSelector, comparer) {
       if (typeof outerKeySelector !== 'function')
         throw TypeError('outerKeySelector must be a function');
       if (typeof innerKeySelector !== 'function')
@@ -308,14 +310,14 @@
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       function* $(it) {
-        let m = map(comparer);
+        const m = map(comparer);
         for (let i of inner) {
-          let k = innerKeySelector(i);
+          const k = innerKeySelector(i);
           if (!m.has(k)) m.set(k, []);
           m.get(k).push(i);
         }
         for (let i of it) {
-          let k = outerKeySelector(i);
+          const k = outerKeySelector(i);
           if (m.has(k)) {
             for (let e of m.get(k))
               yield resultSelector(i, e);
@@ -323,11 +325,11 @@
         }
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // last()
     // last(predicate)
-    last: {value: function(predicate) {
+    last(predicate) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       let found = false, last = undefined;
@@ -340,11 +342,11 @@
       if (found)
         return last;
       throw RangeError('sequence is empty');
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // lastOrDefault(value)
     // lastOrDefault(value, predicate)
-    lastOrDefault: {value: function(value, predicate) {
+    lastOrDefault(value, predicate) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       let found = false, last = undefined;
@@ -355,16 +357,16 @@
         }
       }
       return found ? last : value;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // max()
     // max(selector)
-    max: {value: function(selector) {
+    max(selector) {
       if (selector && typeof selector !== 'function')
         throw TypeError('selector must be a function');
       let first = true, max = undefined, found = undefined;
       for (let i of this.it) {
-        let v = selector ? selector(i) : i;
+        const v = selector ? selector(i) : i;
         if (first || max < v) {
           max = v;
           found = i;
@@ -374,16 +376,16 @@
       if (first)
         throw RangeError('sequence is empty');
       return found;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // min()
     // min(selector)
-    min: {value: function(selector) {
+    min(selector) {
       if (selector && typeof selector !== 'function')
         throw TypeError('selector must be a function');
       let first = true, min = undefined, found = undefined;
       for (let i of this.it) {
-        let v = selector ? selector(i) : i;
+        const v = selector ? selector(i) : i;
         if (first || v < min) {
           min = v;
           found = i;
@@ -393,11 +395,11 @@
       if (first)
         throw RangeError('sequence is empty');
       return found;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // orderBy(keySelector)
     // orderBy(keySelector, comparer)
-    orderBy: {value: function(keySelector, comparer) {
+    orderBy(keySelector, comparer) {
       if (typeof keySelector !== 'function')
         throw TypeError('keySelector must be a function');
       if (comparer && typeof comparer !== 'function')
@@ -405,11 +407,11 @@
       comparer = comparer || order;
       return new OrderedEnumerable(
         this.it, (a, b) => comparer(keySelector(a), keySelector(b)));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // orderByDescending(keySelector)
     // orderByDescending(keySelector, comparer)
-    orderByDescending: {value: function(keySelector, comparer) {
+    orderByDescending(keySelector, comparer) {
       if (typeof keySelector !== 'function')
         throw TypeError('keySelector must be a function');
       if (comparer && typeof comparer !== 'function')
@@ -417,21 +419,21 @@
       comparer = comparer || order;
       return new OrderedEnumerable(
         this.it, (a, b) => -comparer(keySelector(a), keySelector(b)));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // reverse()
-    reverse: {value: function() {
+    reverse() {
       function* $(it) {
-        let a = Array.from(it);
+        const a = Array.from(it);
         a.reverse();
         for (let i of a)
           yield i;
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // select(selector)
-    select: {value: function(selector) {
+    select(selector) {
       if (typeof selector !== 'function')
         throw TypeError('selector must be a function');
       function* $(it) {
@@ -440,11 +442,11 @@
           yield selector(i, index++);
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // selectMany(selector)
     // selectMany(selector, resultSelector)
-    selectMany: {value: function(selector, resultSelector) {
+    selectMany(selector, resultSelector) {
       function* $(it) {
         let index = 0;
         for (let i of it) {
@@ -454,28 +456,28 @@
         }
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // sequenceEqual(iterator)
     // sequenceEqual(iterator, comparer)
-    sequenceEqual: {value: function(iterator, comparer) {
+    sequenceEqual(iterator, comparer) {
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       comparer = comparer || Object.is;
-      let it1 = this.it, it2 = iterator[Symbol.iterator]();
+      const it1 = this.it, it2 = iterator[Symbol.iterator]();
       while (true) {
-        let a = it1.next(), b = it2.next();
+        const a = it1.next(), b = it2.next();
         if (a.done || b.done)
           return a.done === b.done;
         if (!comparer(a.value, b.value))
           return false;
       }
       return true;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // single()
     // single(predicate)
-    single: {value: function(predicate) {
+    single(predicate) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       let found, count = 0;
@@ -492,12 +494,12 @@
       if (count > 1)
         throw RangeError('more than one item in sequence');
       return found;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
 
     // singleOrDefault(value)
     // singleOrDefault(value, predicate)
-    singleOrDefault: {value: function(value, predicate) {
+    singleOrDefault(value, predicate) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       let found, count = 0;
@@ -514,10 +516,10 @@
       if (count > 1)
         throw RangeError('more than one item in sequence');
       return found;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // skip(n)
-    skip: {value: function(n) {
+    skip(n) {
       function* $(it) {
         let count = 0;
         for (let i of it) {
@@ -526,10 +528,10 @@
         }
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // skipWhile(predicate)
-    skipWhile: {value: function(predicate) {
+    skipWhile(predicate) {
       if (typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       function* $(it) {
@@ -545,19 +547,19 @@
         }
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // sum()
     // sum(selector)
-    sum: {value: function(selector) {
+    sum(selector) {
       let sum = 0;
       for (let i of this.it)
         sum += selector ? selector(i) : i;
       return sum;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // take(count)
-    take: {value: function(count) {
+    take(count) {
       function* $(it) {
         let n = 0;
         for (let i of it) {
@@ -568,10 +570,10 @@
         }
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // takeWhile(predicate)
-    takeWhile: {value: function(predicate) {
+    takeWhile(predicate) {
       if (typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       function* $(it) {
@@ -584,15 +586,15 @@
         }
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // union(iterable)
     // union(iterable, comparer)
-    union: {value: function (iterable, comparer) {
+    union (iterable, comparer) {
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       function* $(it) {
-        let s = set(comparer);
+        const s = set(comparer);
         for (let i of it) {
           if (!s.has(i)) {
             s.add(i);
@@ -607,10 +609,10 @@
         }
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // where(predicate)
-    where: {value: function(predicate) {
+    where(predicate) {
       if (typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       function* $(it) {
@@ -621,25 +623,25 @@
         }
       }
       return new Enumerable($(this.it));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // zip(iterable)
-    zip: {value: function(iterable) {
+    zip(iterable) {
       function* $(it1, it2) {
         while (true) {
-          let a = it1.next(), b = it2.next();
+          const a = it1.next(), b = it2.next();
           if (a.done || b.done)
             return;
           yield [a.value, b.value];
         }
       }
       return new Enumerable($(this.it, iterable[Symbol.iterator]()));
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
-    [Symbol.iterator]: {value: function() {
+    [Symbol.iterator]() {
       return this.it;
-    }, writable: true, enumerable: false, configurable: true}
-  });
+    }
+  }
 
   // statics
 
@@ -670,27 +672,28 @@
 
   // subclass
 
-  function OrderedEnumerable(it, func) {
-    let funcs = [func];
-    this.funcs = funcs;
-    function* $() {
-      let a = Array.from(it);
-      a.sort(function(a, b) {
-        for (let func of funcs) {
-          let r = func(a, b);
-          if (r) return r;
-        }
-        return 0;
-      });
-      for (let e of a)
-        yield e;
-    };
-    Enumerable.call(this, $());
-  }
-  OrderedEnumerable.prototype = Object.create(Enumerable.prototype, {
+  class OrderedEnumerable extends Enumerable {
+    constructor(it, func) {
+      const funcs = [func];
+      function* $() {
+        const a = Array.from(it);
+        a.sort(function(a, b) {
+          for (let func of funcs) {
+            const r = func(a, b);
+            if (r) return r;
+          }
+          return 0;
+        });
+        for (let e of a)
+          yield e;
+      };
+      super($());
+      this.funcs = funcs;
+    }
+
     // thenBy(keySelector)
     // thenBy(keySelector, comparer)
-    thenBy: {value: function(keySelector, comparer) {
+    thenBy(keySelector, comparer) {
       if (typeof keySelector !== 'function')
         throw TypeError('keySelector must be a function');
       if (comparer && typeof comparer !== 'function')
@@ -698,11 +701,11 @@
       comparer = comparer || order;
       this.funcs.push((a, b) => comparer(keySelector(a), keySelector(b)));
       return this;
-    }, writable: true, enumerable: false, configurable: true},
+    }
 
     // thenByDescending(keySelector)
     // thenByDescending(keySelector, comparer)
-    thenByDescending: {value: function(keySelector, comparer) {
+    thenByDescending(keySelector, comparer) {
       if (typeof keySelector !== 'function')
         throw TypeError('keySelector must be a function');
       if (comparer && typeof comparer !== 'function')
@@ -710,8 +713,8 @@
       comparer = comparer || order;
       this.funcs.push((a, b) => -comparer(keySelector(a), keySelector(b)));
       return this;
-    }, writable: true, enumerable: false, configurable: true}
-  });
+    }
+  }
 
   // exports
 
