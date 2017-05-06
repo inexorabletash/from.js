@@ -5,9 +5,7 @@
 
   // Return a Set, or slow O(n) partial impl. if a custom comparer is required.
   function set(comparer) {
-    if (!comparer || comparer === Object.is)
-      return new Set();
-    return new SlowSet(comparer);
+    return (comparer === Object.is) ? new Set() : new SlowSet(comparer);
   }
   class SlowSet {
     constructor(comparer) {
@@ -28,9 +26,7 @@
 
   // Return a Map, or slow O(n) partial impl. if a custom comparer is required.
   function map(comparer) {
-    if (!comparer || comparer === Object.is)
-      return new Map();
-    return new SlowMap(comparer);
+    return (comparer === Object.is) ? new Map() : new SlowMap(comparer);
   }
   class SlowMap {
     constructor(comparer) {
@@ -140,10 +136,9 @@
 
     // contains(x)
     // contains(x, comparer)
-    contains(value, comparer) {
-      if (comparer && typeof comparer !== 'function')
+    contains(value, comparer = Object.is) {
+      if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
-      comparer = comparer || Object.is;
       for (let i of this.it) {
         if (comparer(i, value))
           return true;
@@ -178,8 +173,8 @@
 
     // distinct()
     // distinct(comparer)
-    distinct(comparer) {
-      if (comparer && typeof comparer !== 'function')
+    distinct(comparer = Object.is) {
+      if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       return new Enumerable((function*(it) {
         const s = set(comparer);
@@ -215,8 +210,8 @@
 
     // except(iterable)
     // except(iterable, comparer)
-    except (iterable, comparer) {
-      if (comparer && typeof comparer !== 'function')
+    except (iterable, comparer = Object.is) {
+      if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       return new Enumerable((function*(it) {
         const s = set(comparer);
@@ -241,8 +236,8 @@
       throw RangeError('sequence is empty');
     }
 
-    // firstOrDefault()
-    // firstOrDefault(predicate)
+    // firstOrDefault(value)
+    // firstOrDefault(value, predicate)
     firstOrDefault(value, predicate) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
@@ -255,10 +250,10 @@
 
     // groupBy(keySelector)
     // groupBy(keySelector, comparer)
-    groupBy(keySelector, comparer) {
+    groupBy(keySelector, comparer = Object.is) {
       if (typeof keySelector !== 'function')
         throw TypeError('keySelector must be a function');
-      if (comparer && typeof comparer !== 'function')
+      if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       return new Enumerable((function*(it) {
         const m = map(comparer);
@@ -274,8 +269,8 @@
 
     // intersect(iterable)
     // intersect(iterable, comparer)
-    intersect (iterable, comparer) {
-      if (comparer && typeof comparer !== 'function')
+    intersect (iterable, comparer = Object.is) {
+      if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       return new Enumerable((function*(it) {
         const m = map(comparer);
@@ -294,14 +289,14 @@
 
     // join(inner, outerKeySelector, innerKeySelector, resultSelector)
     // join(inner, outerKeySelector, innerKeySelector, resultSelector, comparer)
-    join(inner, outerKeySelector, innerKeySelector, resultSelector, comparer) {
+    join(inner, outerKeySelector, innerKeySelector, resultSelector, comparer = Object.is) {
       if (typeof outerKeySelector !== 'function')
         throw TypeError('outerKeySelector must be a function');
       if (typeof innerKeySelector !== 'function')
         throw TypeError('innerKeySelector must be a function');
       if (typeof resultSelector !== 'function')
         throw TypeError('resultSelector must be a function');
-      if (comparer && typeof comparer !== 'function')
+      if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       return new Enumerable((function*(it) {
         const m = map(comparer);
@@ -392,24 +387,22 @@
 
     // orderBy(keySelector)
     // orderBy(keySelector, comparer)
-    orderBy(keySelector, comparer) {
+    orderBy(keySelector, comparer = order) {
       if (typeof keySelector !== 'function')
         throw TypeError('keySelector must be a function');
-      if (comparer && typeof comparer !== 'function')
+      if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
-      comparer = comparer || order;
       return new OrderedEnumerable(
         this.it, (a, b) => comparer(keySelector(a), keySelector(b)));
     }
 
     // orderByDescending(keySelector)
     // orderByDescending(keySelector, comparer)
-    orderByDescending(keySelector, comparer) {
+    orderByDescending(keySelector, comparer = order) {
       if (typeof keySelector !== 'function')
         throw TypeError('keySelector must be a function');
-      if (comparer && typeof comparer !== 'function')
+      if ( typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
-      comparer = comparer || order;
       return new OrderedEnumerable(
         this.it, (a, b) => -comparer(keySelector(a), keySelector(b)));
     }
@@ -452,10 +445,9 @@
 
     // sequenceEqual(iterator)
     // sequenceEqual(iterator, comparer)
-    sequenceEqual(iterator, comparer) {
-      if (comparer && typeof comparer !== 'function')
+    sequenceEqual(iterator, comparer = Object.is) {
+      if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
-      comparer = comparer || Object.is;
       const it1 = this.it, it2 = iterator[Symbol.iterator]();
       while (true) {
         const a = it1.next(), b = it2.next();
@@ -578,8 +570,8 @@
 
     // union(iterable)
     // union(iterable, comparer)
-    union (iterable, comparer) {
-      if (comparer && typeof comparer !== 'function')
+    union (iterable, comparer = Object.is) {
+      if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       return new Enumerable((function*(it) {
         const s = set(comparer);
@@ -675,24 +667,22 @@
 
     // thenBy(keySelector)
     // thenBy(keySelector, comparer)
-    thenBy(keySelector, comparer) {
+    thenBy(keySelector, comparer = order) {
       if (typeof keySelector !== 'function')
         throw TypeError('keySelector must be a function');
-      if (comparer && typeof comparer !== 'function')
+      if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
-      comparer = comparer || order;
       this.funcs.push((a, b) => comparer(keySelector(a), keySelector(b)));
       return this;
     }
 
     // thenByDescending(keySelector)
     // thenByDescending(keySelector, comparer)
-    thenByDescending(keySelector, comparer) {
+    thenByDescending(keySelector, comparer = order) {
       if (typeof keySelector !== 'function')
         throw TypeError('keySelector must be a function');
-      if (comparer && typeof comparer !== 'function')
+      if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
-      comparer = comparer || order;
       this.funcs.push((a, b) => -comparer(keySelector(a), keySelector(b)));
       return this;
     }

@@ -89,7 +89,7 @@ Methods are lazy where possible, meaning the traversal of the underlying iterato
 
 ### Advanced usage
 Some methods take an optional _comparer_ which is a function for comparing two
-arguments; these come in two different flavors. 
+arguments; these come in two different flavors.
 
 * An _equality comparer_ must return `true` if the two arguments are considered equal, and `false` otherwise. The default _equality comparer_ is equivalent to `Object.is()`.
 * An _order comparer_ must return a number; negative if the first argument is less than the second argument, a positive if the second argument is less than the first argument, or `0` otherwise. The default _order comparer_ is equivalent to `(a, b) => (a < b) ? -1 : (b < a) ? 1 : 0`
@@ -100,12 +100,14 @@ Some methods (first, last, single, elementAt, min, max) throw a **RangeError** i
 
 ### Requirements
 ECMAScript 2015 (ES6) - support for:
+* classes: `class`, `extends`, `constructor`
 * iterators: `for..of` and `Symbol.iterator`
 * generators: `function*(){ ... yield ... }`
 * arrow functions: `(a, b) => a + b`
-* `let`
+* `let`, `const`
 * `Map`, `Set`
 * `Array.from`
+* default arguments
 
 It could be transpiled down to ES5, but you'd probably want to write the
 application code using ES6isms anyway. (So transpile that too.)
