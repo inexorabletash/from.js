@@ -130,13 +130,12 @@
 
     // concat(iterable)
     concat(iterable) {
-      function* $(it) {
+      return new Enumerable((function*(it) {
         for (let i of it)
           yield i;
         for (let i of iterable)
           yield i;
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // contains(x)
@@ -165,7 +164,7 @@
 
     // defaultIfEmpty(value)
     defaultIfEmpty(value) {
-      function* $(it) {
+      return new Enumerable((function*(it) {
         let empty = true;
         for (let i of it) {
           empty = false;
@@ -173,8 +172,7 @@
         }
         if (empty)
           yield value;
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
 
@@ -183,7 +181,7 @@
     distinct(comparer) {
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
-      function* $(it) {
+      return new Enumerable((function*(it) {
         const s = set(comparer);
         for (let i of it) {
           if (!s.has(i)) {
@@ -191,8 +189,7 @@
             yield i;
           }
         }
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // elementAt(index)
@@ -221,7 +218,7 @@
     except (iterable, comparer) {
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
-      function* $(it) {
+      return new Enumerable((function*(it) {
         const s = set(comparer);
         for (let i of iterable)
           s.add(i);
@@ -229,8 +226,7 @@
           if (!s.has(i))
             yield i;
         }
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // first()
@@ -264,7 +260,7 @@
         throw TypeError('keySelector must be a function');
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
-      function* $(it) {
+      return new Enumerable((function*(it) {
         const m = map(comparer);
         for (let i of it) {
           const k = keySelector(i);
@@ -273,8 +269,7 @@
         }
         for (let i of m)
           yield i;
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // intersect(iterable)
@@ -282,7 +277,7 @@
     intersect (iterable, comparer) {
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
-      function* $(it) {
+      return new Enumerable((function*(it) {
         const m = map(comparer);
         for (let i of it)
           m.set(i, false);
@@ -294,8 +289,7 @@
           if (i[1])
             yield i[0];
         }
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // join(inner, outerKeySelector, innerKeySelector, resultSelector)
@@ -309,7 +303,7 @@
         throw TypeError('resultSelector must be a function');
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
-      function* $(it) {
+      return new Enumerable((function*(it) {
         const m = map(comparer);
         for (let i of inner) {
           const k = innerKeySelector(i);
@@ -323,8 +317,7 @@
               yield resultSelector(i, e);
           }
         }
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // last()
@@ -423,39 +416,38 @@
 
     // reverse()
     reverse() {
-      function* $(it) {
+      return new Enumerable((function*(it) {
         const a = Array.from(it);
         a.reverse();
         for (let i of a)
           yield i;
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // select(selector)
     select(selector) {
       if (typeof selector !== 'function')
         throw TypeError('selector must be a function');
-      function* $(it) {
+      return new Enumerable((function*(it) {
         let index = 0;
         for (let i of it)
           yield selector(i, index++);
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // selectMany(selector)
     // selectMany(selector, resultSelector)
     selectMany(selector, resultSelector) {
-      function* $(it) {
+      if (typeof selector !== 'function')
+        throw TypeError('selector must be a function');
+      return new Enumerable((function*(it) {
         let index = 0;
         for (let i of it) {
           for (let j of selector(i, index))
             yield resultSelector ? resultSelector(i, j) : j;
           ++index;
         }
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // sequenceEqual(iterator)
@@ -520,21 +512,20 @@
 
     // skip(n)
     skip(n) {
-      function* $(it) {
+      return new Enumerable((function*(it) {
         let count = 0;
         for (let i of it) {
           if (count++ >= n)
             yield i;
         }
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // skipWhile(predicate)
     skipWhile(predicate) {
       if (typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
-      function* $(it) {
+      return new Enumerable((function*(it) {
         let index = 0;
         for (let i of it) {
           if (!predicate(i, index++)) {
@@ -545,8 +536,7 @@
         for (let i of it) {
           yield i;
         }
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // sum()
@@ -560,7 +550,7 @@
 
     // take(count)
     take(count) {
-      function* $(it) {
+      return new Enumerable((function*(it) {
         let n = 0;
         for (let i of it) {
           if (n++ < count)
@@ -568,15 +558,14 @@
           else
             return;
         }
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // takeWhile(predicate)
     takeWhile(predicate) {
       if (typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
-      function* $(it) {
+      return new Enumerable((function*(it) {
         let index = 0;
         for (let i of it) {
           if (predicate(i, index++))
@@ -584,8 +573,7 @@
           else
             return;
         }
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // union(iterable)
@@ -593,7 +581,7 @@
     union (iterable, comparer) {
       if (comparer && typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
-      function* $(it) {
+      return new Enumerable((function*(it) {
         const s = set(comparer);
         for (let i of it) {
           if (!s.has(i)) {
@@ -607,35 +595,32 @@
             yield i;
           }
         }
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // where(predicate)
     where(predicate) {
       if (typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
-      function* $(it) {
+      return new Enumerable((function*(it) {
         let index = 0;
         for (let i of it) {
           if (predicate(i, index++))
             yield i;
         }
-      }
-      return new Enumerable($(this.it));
+      })(this.it));
     }
 
     // zip(iterable)
     zip(iterable) {
-      function* $(it1, it2) {
+      return new Enumerable((function*(it1, it2) {
         while (true) {
           const a = it1.next(), b = it2.next();
           if (a.done || b.done)
             return;
           yield [a.value, b.value];
         }
-      }
-      return new Enumerable($(this.it, iterable[Symbol.iterator]()));
+      })(this.it, iterable[Symbol.iterator]()));
     }
 
     [Symbol.iterator]() {
@@ -645,29 +630,27 @@
 
   // statics
 
-  Enumerable.empty = function() {
+  Enumerable.empty = () => {
     return new Enumerable([]);
   };
 
-  Enumerable.range = function(start, count) {
+  Enumerable.range = (start, count) => {
     start = Number(start);
     count = Number(count);
-    function* $() {
+    return new Enumerable((function*() {
       while (count-- > 0) {
         yield start++;
       }
-    }
-    return new Enumerable($());
+    })());
   };
 
-  Enumerable.repeat = function(element, count) {
+  Enumerable.repeat = (element, count) => {
     count = Number(count);
-    function* $() {
+    return new Enumerable((function*() {
       while (count-- > 0) {
         yield element;
       }
-    }
-    return new Enumerable($());
+    })());
   };
 
   // subclass
@@ -675,9 +658,9 @@
   class OrderedEnumerable extends Enumerable {
     constructor(it, func) {
       const funcs = [func];
-      function* $() {
+      super((function*() {
         const a = Array.from(it);
-        a.sort(function(a, b) {
+        a.sort((a, b) => {
           for (let func of funcs) {
             const r = func(a, b);
             if (r) return r;
@@ -686,8 +669,7 @@
         });
         for (let e of a)
           yield e;
-      };
-      super($());
+      })());
       this.funcs = funcs;
     }
 
