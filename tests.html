@@ -6,6 +6,7 @@
 <div id="qunit"></div>
 <script>
 var a = [0, 1, 2, 3, 4];
+function a_it() { return a[Symbol.iterator](); }
 var people = [{id: 123, name: 'alice'}, {id: 7, name: 'bob'}];
 var pets = [{name: 'daisy', owner: 123}, {name: 'fido', owner: 7}, {name: 'speak', owner: 123}];
 var keyed = [
@@ -17,6 +18,7 @@ var keyed = [
 ];
 var mixed = [1, 2, 3, '1', '2', '3'];
 var lazy = function*() { throw new Error('should not be called'); };
+var bad2 = Array.from(a); Object.defineProperty(bad2, '2', {get: () => { throw Error(); }});
 
 var square = n => n * n;
 var odd = n => !!(n % 2);
@@ -63,6 +65,14 @@ QUnit.test('count', function(assert) {
   assert.expr_equals('from(a).count.length', 0);
   assert.expr_equals('from(a).count()', 5);
   assert.expr_equals('from(a).count(i=>i>0)', 4);
+
+  // With non-array
+  assert.expr_equals('from(a_it()).count()', 5);
+  assert.expr_equals('from(a_it()).count(i=>i>0)', 4);
+
+  // With array
+  assert.expr_equals('from(bad2).count()', 5);
+  assert.expr_throws('from(bad2).count(i=>i>0)', Error);
 });
 
 QUnit.test('max', function(assert) {
@@ -176,6 +186,18 @@ QUnit.test('elementAt', function(assert) {
   assert.expr_equals('from(a).elementAt(2)', 2);
   assert.expr_throws('from(a).elementAt(-1)', RangeError);
   assert.expr_throws('from(a).elementAt(7)', RangeError);
+
+  // With non-array
+  assert.expr_equals('from(a_it()).elementAt(2)', 2);
+  assert.expr_throws('from(a_it()).elementAt(-1)', RangeError);
+  assert.expr_throws('from(a_it()).elementAt(7)', RangeError);
+
+  // With array
+  assert.expr_equals('from(bad2).elementAt(1)', 1);
+  assert.expr_throws('from(bad2).elementAt(2)', Error);
+  assert.expr_equals('from(bad2).elementAt(3)', 3);
+  assert.expr_throws('from(bad2).elementAt(-1)', RangeError);
+  assert.expr_throws('from(bad2).elementAt(7)', RangeError);
 });
 
 QUnit.test('elementAtOrDefault', function(assert) {
@@ -183,6 +205,17 @@ QUnit.test('elementAtOrDefault', function(assert) {
   assert.expr_equals('from(a).elementAtOrDefault(2, NaN)', 2);
   assert.expr_equals('from(a).elementAtOrDefault(-1, NaN)', NaN);
   assert.expr_equals('from(a).elementAtOrDefault(7, NaN)', NaN);
+
+  // With non-array
+  assert.expr_equals('from(a_it()).elementAtOrDefault(2, NaN)', 2);
+  assert.expr_equals('from(a_it()).elementAtOrDefault(-1, NaN)', NaN);
+  assert.expr_equals('from(a_it()).elementAtOrDefault(7, NaN)', NaN);
+
+  assert.expr_equals('from(bad2).elementAtOrDefault(1, NaN)', 1);
+  assert.expr_throws('from(bad2).elementAtOrDefault(2, NaN)', Error);
+  assert.expr_equals('from(bad2).elementAtOrDefault(3, NaN)', 3);
+  assert.expr_equals('from(bad2).elementAtOrDefault(-1, NaN)', NaN);
+  assert.expr_equals('from(bad2).elementAtOrDefault(7, NaN)', NaN);
 });
 
 QUnit.test('first', function(assert) {
@@ -207,6 +240,18 @@ QUnit.test('last', function(assert) {
   assert.expr_equals('from(a).last(odd)', 3);
   assert.expr_throws('from([]).last()', RangeError);
   assert.expr_throws('from(a).last(i=>i<0)', RangeError);
+
+  // With non-array
+  assert.expr_equals('from(a_it()).last()', 4);
+  assert.expr_equals('from(a_it()).last(odd)', 3);
+  assert.expr_throws('from([][Symbol.iterator]()).last()', RangeError);
+  assert.expr_throws('from(a_it()).last(i=>i<0)', RangeError);
+
+  // With array
+  assert.expr_equals('from(bad2).last()', 4);
+  assert.expr_equals('from(bad2).last(odd)', 3);
+  assert.expr_throws('from(bad2).last(i=>i<0)', Error);
+
 });
 
 QUnit.test('lastOrDefault', function(assert) {
@@ -215,6 +260,17 @@ QUnit.test('lastOrDefault', function(assert) {
   assert.expr_equals('from([]).lastOrDefault(NaN)', NaN);
   assert.expr_equals('from([1, 2, 3]).lastOrDefault(NaN, i => i < 2)', 1);
   assert.expr_equals('from([1, 2, 3]).lastOrDefault(NaN, i => i > 5)', NaN);
+
+  // With non-array
+  assert.expr_equals('from([1, 2, 3][Symbol.iterator]()).lastOrDefault(NaN)', 3);
+  assert.expr_equals('from([][Symbol.iterator]()).lastOrDefault(NaN)', NaN);
+  assert.expr_equals('from([1, 2, 3][Symbol.iterator]()).lastOrDefault(NaN, i => i < 2)', 1);
+  assert.expr_equals('from([1, 2, 3][Symbol.iterator]()).lastOrDefault(NaN, i => i > 5)', NaN);
+
+  // With array
+  assert.expr_equals('from(bad2).lastOrDefault(NaN)', 4);
+  assert.expr_equals('from(bad2).lastOrDefault(NaN, i => i < 4)', 3);
+  assert.expr_throws('from(bad2).lastOrDefault(NaN, i => i > 5)', Error);
 });
 
 QUnit.test('single', function(assert) {
@@ -246,6 +302,12 @@ QUnit.test('skip', function(assert) {
   assert.expr_equals('from(a).skip(2)', [2, 3, 4]);
   assert.expr_nothrow('from(lazy()).skip(2)', 'is lazy');
   assert.expr_chains('from(a).skip(2)');
+
+  // With non-array
+  assert.expr_equals('from(a_it()).skip(2)', [2, 3, 4]);
+
+  // With array
+  assert.expr_equals('from(bad2).skip(3)', [3, 4]);
 });
 
 QUnit.test('skipWhile', function(assert) {
@@ -384,6 +446,9 @@ QUnit.test('reverse', function(assert) {
   assert.expr_equals('from(a).reverse.length', 0);
   assert.expr_equals('from(a).reverse()', [4, 3, 2, 1, 0]);
   assert.expr_nothrow('from(lazy()).reverse()', [4, 3, 2, 1, 0], 'is lazy');
+
+  // With non-array
+  assert.expr_equals('from(a_it()).reverse()', [4, 3, 2, 1, 0]);
 });
 
 QUnit.test('select', function(assert) {

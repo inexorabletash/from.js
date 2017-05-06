@@ -211,7 +211,7 @@
 
     // except(iterable)
     // except(iterable, comparer)
-    except (iterable, comparer = Object.is) {
+    except(iterable, comparer = Object.is) {
       if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       return new Enumerable((function*(it) {
@@ -270,7 +270,7 @@
 
     // intersect(iterable)
     // intersect(iterable, comparer)
-    intersect (iterable, comparer = Object.is) {
+    intersect(iterable, comparer = Object.is) {
       if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       return new Enumerable((function*(it) {
@@ -575,7 +575,7 @@
 
     // union(iterable)
     // union(iterable, comparer)
-    union (iterable, comparer = Object.is) {
+    union(iterable, comparer = Object.is) {
       if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       return new Enumerable((function*(it) {
@@ -650,7 +650,73 @@
     })());
   };
 
-  // subclass
+  class ArrayEnumerable extends Enumerable {
+    constructor(array) {
+      super(array[Symbol.iterator]());
+      this.array = array;
+    }
+
+    // count()
+    // count(predicate)
+    count(predicate = undefined) {
+      if (predicate && typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
+      if (!predicate)
+        return this.array.length;
+      let n = 0;
+      for (let i = 0; i < this.array.length; ++i)
+        if (predicate(this.array[i])) ++n;
+      return n;
+    }
+
+    // elementAt(index)
+    elementAt(index) {
+      if (index < 0 || index >= this.array.length)
+        throw RangeError('index out of bounds');
+      return this.array[index];
+    }
+
+    // elementAtOrDefault(index, value)
+    elementAtOrDefault(index, value) {
+      if (index < 0 || index >= this.array.length)
+        return value;
+      return this.array[index];
+    }
+
+    // last()
+    // last(predicate)
+    last(predicate = undefined) {
+      if (predicate && typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
+      for (let i = this.array.length - 1; i >= 0; --i) {
+        const v = this.array[i];
+        if (!predicate || predicate(v))
+          return v;
+      }
+      throw RangeError('sequence is empty');
+    }
+
+    // lastOrDefault(value)
+    // lastOrDefault(value, predicate)
+    lastOrDefault(value, predicate = undefined) {
+      if (predicate && typeof predicate !== 'function')
+        throw TypeError('predicate must be a function');
+      for (let i = this.array.length - 1; i >= 0; --i) {
+        const v = this.array[i];
+        if (!predicate || predicate(v))
+          return v;
+      }
+      return value;
+    }
+
+    // skip(n)
+    skip(n) {
+      return new Enumerable((function*(a) {
+        for (let i = n; i < a.length; ++i)
+          yield a[i];
+      })(this.array));
+    }
+  }
 
   class OrderedEnumerable extends Enumerable {
     constructor(it, func) {
@@ -696,6 +762,8 @@
   // exports
 
   global.from = function from(it) {
+    if (Array.isArray(it))
+      return new ArrayEnumerable(it);
     return new Enumerable(it);
   };
   global.Enumerable = Enumerable;
