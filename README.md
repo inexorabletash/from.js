@@ -59,6 +59,8 @@ take
 takeWhile
 thenBy
 thenByDescending
+toMap
+toSet
 union
 where
 zip
@@ -68,6 +70,7 @@ By category:
 * **Aggregators:** aggregate average count max min sum
 * **Combiners:** concat distinct except intersect join union zip
 * **Constructors:** empty range repeat
+* **Converters:** toMap toSet
 * **Extractors:** elementAt elementAtOrDefault first firstOrDefault last lastOrDefault single singleOrDefault
 * **Filters:** skip skipWhile take takeWhile where
 * **Qualifiers:** all any contains sequenceEqual

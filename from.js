@@ -623,6 +623,28 @@
     [Symbol.iterator]() {
       return this.it;
     }
+
+    // toMap(keySelector, valueSelector)
+    toMap(keySelector, valueSelector) {
+      if (typeof keySelector !== 'function')
+        throw TypeError('keySelector must be a function');
+      if (typeof valueSelector !== 'function')
+        throw TypeError('valueSelector must be a function');
+      const m = new Map();
+      for (let i of this.it)
+        m.set(keySelector(i), valueSelector(i));
+      return m;
+    }
+
+    // toSet(selector)
+    toSet(selector = undefined) {
+      if (selector && typeof selector !== 'function')
+        throw TypeError('selector must be a function');
+      const s = new Set();
+      for (let i of this.it)
+        s.add(selector ? selector(i) : i);
+      return s;
+    }
   }
 
   // statics

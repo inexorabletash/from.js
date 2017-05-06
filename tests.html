@@ -476,4 +476,22 @@ QUnit.test('other', function(assert) {
   assert.expr_equals('from(a)', [0, 1, 2, 3, 4]);
   assert.expr_nothrow('from(lazy())', 'is lazy');
 });
+
+QUnit.test('toMap', function(assert) {
+  assert.expr_equals('from(a).toMap.length', 2);
+  assert.expr_equals('from(a).toMap(k=>k, v=>v).size', 5);
+  assert.expr_equals('from(a).toMap(k=>k, v=>v).has(0)', true);
+  assert.expr_equals('from(a).toMap(k=>k, v=>v).has(-1)', false);
+  assert.expr_equals('from(a).toMap(k=>k*k, v=>v).has(16)', true);
+  assert.expr_equals('from(a).toMap(k=>k*k, v=>v+v).get(16)', 8);
+});
+
+QUnit.test('toSet', function(assert) {
+  assert.expr_equals('from(a).toSet.length', 0);
+  assert.expr_equals('from(a).toSet().size', 5);
+  assert.expr_equals('from(a).toSet().has(0)', true);
+  assert.expr_equals('from(a).toSet().has(-1)', false);
+  assert.expr_equals('from(a).toSet(k=>k*k).has(16)', true);
+});
+
 </script>

@@ -262,6 +262,17 @@ from([1, 2, 3, 4]).takeWhile(i => i < 4); // « 1, 2, 3 »
 ```
 For each item, _`predicate`_ is called with the item as the first argument and index as the second argument.
 
+### `toMap(keySelector, valueSelector)` &rarr; _Map_
+```js
+from([1, 2, 3]).toMap(k => k * k, v => v + v); // { 1 &rarr; 2, 4 &rarr; 4, 9 &rarr; 6 }
+```
+
+### `toSet([selector])` &rarr; _Set_
+```js
+from([1, 2, 3]).toSet(); // ( 1, 2, 3 )
+from([1, 2, 3]).toSet(i => i * i); // ( 1, 4, 9 )
+```
+
 ### `union(iterable[, comparer])` &rarr; _Enumerable_
 ```js
 from([1, 2, 3]).union([3, 4, 5]); // « 1, 2, 3, 4, 5 »
