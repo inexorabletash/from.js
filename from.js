@@ -7,50 +7,58 @@
   function set(comparer) {
     if (!comparer || comparer === Object.is)
       return new Set();
-    let contents = [];
-    return {
-      add: function(v) {
-        for (let i of contents)
-          if (comparer(i, v)) return;
-        contents.push(v);
-      },
-      has: function(v) {
-        for (let i of contents)
-          if (comparer(i, v)) return true;
-        return false;
-      }
-    };
+    return new SlowSet(comparer);
+  }
+  class SlowSet {
+    constructor(comparer) {
+      this.comparer = comparer;
+      this.contents = [];
+    }
+    add(v) {
+      for (let i of this.contents)
+          if ( this.comparer(i, v)) return;
+         this.contents.push(v);
+    }
+    has(v) {
+      for (let i of this.contents)
+        if (this.comparer(i, v)) return true;
+      return false;
+    }
   }
 
   // Return a Map, or slow O(n) partial impl. if a custom comparer is required.
   function map(comparer) {
     if (!comparer || comparer === Object.is)
       return new Map();
-    let contents = [];
-    return {
-      set: function(k, v) {
-        for (let i of contents) {
-          if (comparer(i[0], k)) {
-            i[1] = v;
-            return;
-          }
+    return new SlowMap(comparer);
+  }
+  class SlowMap {
+    constructor(comparer) {
+      this.comparer = comparer;
+      this.contents = [];
+    }
+    set(k, v) {
+      for (let i of this.contents) {
+        if (this.comparer(i[0], k)) {
+          i[1] = v;
+          return;
         }
-        contents.push([k, v]);
-      },
-      get: function(k) {
-        for (let i of contents)
-          if (comparer(i[0], k)) return i[1];
-        return undefined;
-      },
-      has: function(k) {
-        for (let i of contents)
-          if (comparer(i[0], k)) return true;
-        return false;
-      },
-      [Symbol.iterator]: function() {
-        return contents[Symbol.iterator]();
       }
-    };
+      this.contents.push([k, v]);
+    }
+    get(k) {
+      for (let i of this.contents)
+        if (this.comparer(i[0], k)) return i[1];
+      return undefined;
+    }
+    has(k) {
+      for (let i of this.contents)
+        if (this.comparer(i[0], k)) return true;
+      return false;
+    }
+    [Symbol.iterator]() {
+      return this.contents[Symbol.iterator]();
+    }
   }
 
   // class
