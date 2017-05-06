@@ -67,7 +67,9 @@
     // aggregate(func)
     // aggregate(func, seed)
     // aggregate(func, seed, resultSelector)
-    aggregate(func, seed, resultSelector) {
+    aggregate(func, seed = undefined, resultSelector = undefined) {
+      if (typeof func !== 'function')
+        throw TypeError('func must be a function');
       if (resultSelector && typeof resultSelector !== 'function')
         throw TypeError('resultSelector must be a function');
       let init, agg;
@@ -90,7 +92,7 @@
 
     // all(predicate)
     all(predicate) {
-      if (predicate && typeof predicate !== 'function')
+      if (typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       for (let i of this.it) {
         if (!predicate(i))
@@ -99,10 +101,9 @@
       return true;
     }
 
-    // any()
     // any(predicate)
     any(predicate) {
-      if (predicate && typeof predicate !== 'function')
+      if (typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       for (let i of this.it) {
         if (predicate(i))
@@ -113,7 +114,7 @@
 
     // average()
     // average(selector)
-    average(selector) {
+    average(selector = undefined) {
       if (selector && typeof selector !== 'function')
         throw TypeError('selector must be a function');
       let sum = 0, count = 0;
@@ -148,7 +149,7 @@
 
     // count()
     // count(predicate)
-    count(predicate) {
+    count(predicate = undefined) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       let n = 0;
@@ -226,7 +227,7 @@
 
     // first()
     // first(predicate)
-    first(predicate) {
+    first(predicate = undefined) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       for (let i of this.it) {
@@ -238,7 +239,7 @@
 
     // firstOrDefault(value)
     // firstOrDefault(value, predicate)
-    firstOrDefault(value, predicate) {
+    firstOrDefault(value, predicate = undefined) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       for (let i of this.it) {
@@ -317,7 +318,7 @@
 
     // last()
     // last(predicate)
-    last(predicate) {
+    last(predicate = undefined) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       let found = false, last = undefined;
@@ -334,7 +335,7 @@
 
     // lastOrDefault(value)
     // lastOrDefault(value, predicate)
-    lastOrDefault(value, predicate) {
+    lastOrDefault(value, predicate = undefined) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       let found = false, last = undefined;
@@ -349,7 +350,7 @@
 
     // max()
     // max(selector)
-    max(selector) {
+    max(selector = undefined) {
       if (selector && typeof selector !== 'function')
         throw TypeError('selector must be a function');
       let first = true, max = undefined, found = undefined;
@@ -368,7 +369,7 @@
 
     // min()
     // min(selector)
-    min(selector) {
+    min(selector = undefined) {
       if (selector && typeof selector !== 'function')
         throw TypeError('selector must be a function');
       let first = true, min = undefined, found = undefined;
@@ -430,9 +431,11 @@
 
     // selectMany(selector)
     // selectMany(selector, resultSelector)
-    selectMany(selector, resultSelector) {
+    selectMany(selector, resultSelector = undefined) {
       if (typeof selector !== 'function')
         throw TypeError('selector must be a function');
+      if (resultSelector && typeof resultSelector !== 'function')
+        throw TypeError('resultSelector must be a function');
       return new Enumerable((function*(it) {
         let index = 0;
         for (let i of it) {
@@ -461,7 +464,7 @@
 
     // single()
     // single(predicate)
-    single(predicate) {
+    single(predicate = undefined) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       let found, count = 0;
@@ -483,7 +486,7 @@
 
     // singleOrDefault(value)
     // singleOrDefault(value, predicate)
-    singleOrDefault(value, predicate) {
+    singleOrDefault(value, predicate = undefined) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       let found, count = 0;
@@ -533,7 +536,9 @@
 
     // sum()
     // sum(selector)
-    sum(selector) {
+    sum(selector = undefined) {
+      if (selector && typeof selector !== 'function')
+        throw TypeError('selector must be a function');
       let sum = 0;
       for (let i of this.it)
         sum += selector ? selector(i) : i;

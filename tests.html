@@ -47,34 +47,40 @@ QUnit.assert.expr_nothrow = function(expr, msg) {
 QUnit.module('Aggregators');
 
 QUnit.test('aggregate', function(assert) {
+  assert.expr_equals('from(a).aggregate.length', 1);
   assert.expr_equals('from(a).aggregate(sum)', 10);
   assert.expr_equals('from(a).aggregate(sum, 100)', 110);
   assert.expr_equals('from(a).aggregate(sum, 0, r=>"$"+r)', '$10');
 });
 
 QUnit.test('average', function(assert) {
+  assert.expr_equals('from(a).average.length', 0);
   assert.expr_equals('from(a).average()', 2);
   assert.expr_equals('from(a).average(i=>i*10)', 20);
 });
 
 QUnit.test('count', function(assert) {
+  assert.expr_equals('from(a).count.length', 0);
   assert.expr_equals('from(a).count()', 5);
   assert.expr_equals('from(a).count(i=>i>0)', 4);
 });
 
 QUnit.test('max', function(assert) {
+  assert.expr_equals('from(a).max.length', 0);
   assert.expr_equals('from(a).max()', 4);
   assert.expr_equals('from(a).max(i=>-i)', 0);
   assert.expr_throws('from([]).max()', RangeError);
 });
 
 QUnit.test('min', function(assert) {
+  assert.expr_equals('from(a).min.length', 0);
   assert.expr_equals('from(a).min()', 0);
   assert.expr_equals('from(a).min(i=>-i)', 4);
   assert.expr_throws('from([]).min()', RangeError);
 });
 
 QUnit.test('sum', function(assert) {
+  assert.expr_equals('from(a).sum.length', 0);
   assert.expr_equals('from(a).sum()', 10);
   assert.expr_equals('from(a).sum(i=>i*i)', 30);
 });
@@ -84,18 +90,21 @@ QUnit.test('sum', function(assert) {
 QUnit.module('Combiners');
 
 QUnit.test('concat', function(assert) {
+  assert.expr_equals('from(a).concat.length', 1);
   assert.expr_equals('from(a).concat(a)', [0, 1, 2, 3, 4, 0, 1, 2, 3, 4]);
   assert.expr_nothrow('from(lazy()).concat(lazy())', 'is lazy');
   assert.expr_chains('from(a).concat(a)');
 });
 
 QUnit.test('distinct', function(assert) {
+  assert.expr_equals('from([1,2,3,1,2,3]).distinct.length', 0);
   assert.expr_equals('from([1,2,3,1,2,3]).distinct()', [1, 2, 3]);
   assert.expr_equals('from(mixed).distinct(itype)', [1, 2, 3]);
   assert.expr_nothrow('from(lazy()).distinct()', 'is lazy');
 });
 
 QUnit.test('except', function(assert) {
+  assert.expr_equals('from(a).except.length', 1);
   assert.expr_equals('from(a).except([2, 3])', [0, 1, 4]);
   assert.expr_equals('from(mixed).except([2], itype)', [1, 3, '1', '3']);
   assert.expr_nothrow('from(lazy()).except([2, 3])', 'is lazy');
@@ -103,6 +112,7 @@ QUnit.test('except', function(assert) {
 });
 
 QUnit.test('intersect', function(assert) {
+  assert.expr_equals('from(a).intersect.length', 1);
   assert.expr_equals('from(a).intersect([2, 3, 5])', [2, 3]);
   assert.expr_equals('from(mixed).intersect([2, 5], itype)', [2]);
   assert.expr_nothrow('from(lazy()).intersect([2, 3, 5])', 'is lazy');
@@ -110,6 +120,7 @@ QUnit.test('intersect', function(assert) {
 });
 
 QUnit.test('join', function(assert) {
+  assert.expr_equals('from(people).join.length', 4);
   assert.expr_equals('from(people).join(pets, o=>o.id, i=>i.owner, (o, p) => o.name + " - " + p.name)',
                 ['alice - daisy', 'alice - speak', 'bob - fido']
   );
@@ -120,6 +131,7 @@ QUnit.test('join', function(assert) {
 });
 
 QUnit.test('union', function(assert) {
+  assert.expr_equals('from(a).union.length', 1);
   assert.expr_equals('from(a).union([4, 5, 6])', [0, 1, 2, 3, 4, 5, 6]);
   assert.expr_equals('from([1,1]).union([2, 2])', [1, 2]);
   assert.expr_equals('from(mixed).union(["2", "4", 6], itype)', [1, 2, 3, '4', 6]);
@@ -129,6 +141,7 @@ QUnit.test('union', function(assert) {
 });
 
 QUnit.test('zip', function(assert) {
+  assert.expr_equals('from(a).zip.length', 1);
   assert.expr_equals('from(a).zip([7, 6, 5]).elementAt(0)', [0, 7]);
   assert.expr_equals('from(a).zip([7, 6, 5]).elementAt(1)', [1, 6]);
   assert.expr_equals('from(a).zip([7, 6, 5]).elementAt(2)', [2, 5]);
@@ -140,14 +153,17 @@ QUnit.test('zip', function(assert) {
 QUnit.module('Constructors');
 
 QUnit.test('empty', function(assert) {
+  assert.expr_equals('Enumerable.empty.length', 0);
   assert.expr_equals('Enumerable.empty()', []);
 });
 
 QUnit.test('range', function(assert) {
+  assert.expr_equals('Enumerable.range.length', 2);
   assert.expr_equals('Enumerable.range(5, 3)', [5, 6, 7]);
 });
 
 QUnit.test('repeat', function(assert) {
+  assert.expr_equals('Enumerable.repeat.length', 2);
   assert.expr_equals('Enumerable.repeat(1, 2)', [1, 1]);
 });
 
@@ -156,18 +172,21 @@ QUnit.test('repeat', function(assert) {
 QUnit.module('Extractors');
 
 QUnit.test('elementAt', function(assert) {
+  assert.expr_equals('from(a).elementAt.length', 1);
   assert.expr_equals('from(a).elementAt(2)', 2);
   assert.expr_throws('from(a).elementAt(-1)', RangeError);
   assert.expr_throws('from(a).elementAt(7)', RangeError);
 });
 
 QUnit.test('elementAtOrDefault', function(assert) {
+  assert.expr_equals('from(a).elementAtOrDefault.length', 2);
   assert.expr_equals('from(a).elementAtOrDefault(2, NaN)', 2);
   assert.expr_equals('from(a).elementAtOrDefault(-1, NaN)', NaN);
   assert.expr_equals('from(a).elementAtOrDefault(7, NaN)', NaN);
 });
 
 QUnit.test('first', function(assert) {
+  assert.expr_equals('from(a).first.length', 0);
   assert.expr_equals('from(a).first()', 0);
   assert.expr_equals('from(a).first(odd)', 1);
   assert.expr_throws('from([]).first()', RangeError);
@@ -175,6 +194,7 @@ QUnit.test('first', function(assert) {
 });
 
 QUnit.test('firstOrDefault', function(assert) {
+  assert.expr_equals('from(a).firstOrDefault.length', 1);
   assert.expr_equals('from(a).firstOrDefault("a")', 0);
   assert.expr_equals('from(a).firstOrDefault("a", odd)', 1);
   assert.expr_equals('from([]).firstOrDefault("a")', 'a');
@@ -182,6 +202,7 @@ QUnit.test('firstOrDefault', function(assert) {
 });
 
 QUnit.test('last', function(assert) {
+  assert.expr_equals('from(a).last.length', 0);
   assert.expr_equals('from(a).last()', 4);
   assert.expr_equals('from(a).last(odd)', 3);
   assert.expr_throws('from([]).last()', RangeError);
@@ -189,6 +210,7 @@ QUnit.test('last', function(assert) {
 });
 
 QUnit.test('lastOrDefault', function(assert) {
+  assert.expr_equals('from([1, 2, 3]).lastOrDefault.length', 1);
   assert.expr_equals('from([1, 2, 3]).lastOrDefault(NaN)', 3);
   assert.expr_equals('from([]).lastOrDefault(NaN)', NaN);
   assert.expr_equals('from([1, 2, 3]).lastOrDefault(NaN, i => i < 2)', 1);
@@ -196,6 +218,7 @@ QUnit.test('lastOrDefault', function(assert) {
 });
 
 QUnit.test('single', function(assert) {
+  assert.expr_equals('from([1]).single.length', 0);
   assert.expr_equals('from([1]).single()', 1);
   assert.expr_throws('from(a).single()', RangeError);
   assert.expr_throws('from([]).single()', RangeError);
@@ -205,6 +228,7 @@ QUnit.test('single', function(assert) {
 });
 
 QUnit.test('singleOrDefault', function(assert) {
+  assert.expr_equals('from([1]).singleOrDefault.length', 1);
   assert.expr_equals('from([1]).singleOrDefault(NaN)', 1);
   assert.expr_throws('from(a).singleOrDefault(NaN)', RangeError);
   assert.expr_equals('from([]).singleOrDefault(NaN)', NaN);
@@ -218,12 +242,14 @@ QUnit.test('singleOrDefault', function(assert) {
 QUnit.module('Filters');
 
 QUnit.test('skip', function(assert) {
+  assert.expr_equals('from(a).skip.length', 1);
   assert.expr_equals('from(a).skip(2)', [2, 3, 4]);
   assert.expr_nothrow('from(lazy()).skip(2)', 'is lazy');
   assert.expr_chains('from(a).skip(2)');
 });
 
 QUnit.test('skipWhile', function(assert) {
+  assert.expr_equals('from(a).skipWhile.length', 1);
   assert.expr_equals('from(a).skipWhile(i=>i<2)', [2, 3, 4]);
   assert.expr_equals('from(a).skipWhile((v,i)=>i<2)', [2, 3, 4]);
   assert.expr_nothrow('from(lazy()).skipWhile(i=>i<2)', 'is lazy');
@@ -231,6 +257,7 @@ QUnit.test('skipWhile', function(assert) {
 });
 
 QUnit.test('take', function(assert) {
+  assert.expr_equals('from(a).take.length', 1);
   assert.expr_equals('from(a).take(2)', [0, 1]);
   assert.expr_equals('from(a).take(0)', []);
   assert.expr_equals('from(a).take(100)', a);
@@ -239,6 +266,7 @@ QUnit.test('take', function(assert) {
 });
 
 QUnit.test('takeWhile', function(assert) {
+  assert.expr_equals('from(a).takeWhile.length', 1);
   assert.expr_equals('from(a).takeWhile(i => i != 3)', [0, 1, 2]);
   assert.expr_equals('from(a).takeWhile((v,i) => i != 3)', [0, 1, 2]);
   assert.expr_nothrow('from(lazy()).takeWhile(i => i != 3)', 'is lazy');
@@ -246,6 +274,7 @@ QUnit.test('takeWhile', function(assert) {
 });
 
 QUnit.test('where', function(assert) {
+  assert.expr_equals('from(a).where.length', 1);
   assert.expr_equals('from(a).where(odd)', [1, 3]);
   assert.expr_equals('from(a).where((v, i) => i > 2)', [3, 4]);
   assert.expr_nothrow('from(lazy()).where(odd)', 'is lazy');
@@ -256,16 +285,19 @@ QUnit.test('where', function(assert) {
 QUnit.module('Qualifiers');
 
 QUnit.test('all', function(assert) {
+  assert.expr_equals('from(a).all.length', 1);
   assert.expr_equals('from(a).all(odd)', false);
   assert.expr_equals('from(a).all(i => i >= 0)', true);
 });
 
 QUnit.test('any', function(assert) {
+  assert.expr_equals('from(a).any.length', 1);
   assert.expr_equals('from(a).any(odd)', true);
   assert.expr_equals('from(a).any(i => i > 5)', false);
 });
 
 QUnit.test('contains', function(assert) {
+  assert.expr_equals('from(a).contains.length', 1);
   assert.expr_equals('from(a).contains(1)', true);
   assert.expr_equals('from(a).contains(13)', false);
   assert.expr_equals('from(["a"]).contains(["A"], icase)', true);
@@ -273,6 +305,7 @@ QUnit.test('contains', function(assert) {
 });
 
 QUnit.test('sequenceEqual', function(assert) {
+  assert.expr_equals('from(a).sequenceEqual.length', 1);
   assert.expr_equals('from(a).sequenceEqual(a)', true);
   assert.expr_equals('from(a).sequenceEqual([4,3,2,1,0])', false);
   assert.expr_equals('from(a).sequenceEqual([0,1,2,3,4])', true);
@@ -287,18 +320,21 @@ QUnit.test('sequenceEqual', function(assert) {
 QUnit.module('Sorters');
 
 QUnit.test('orderBy', function(assert) {
+  assert.expr_equals('from(people).orderBy.length', 1);
   assert.expr_equals('from(people).orderBy(e=>e.id).select(e=>e.name)', ['bob', 'alice']);
   assert.expr_equals('from(people).orderBy(e=>e.id,(a,b)=>-cmp(a,b)).select(e=>e.name)', ['alice', 'bob']);
   assert.expr_nothrow('from(lazy()).orderBy(e=>e)', 'is lazy');
 });
 
 QUnit.test('orderByDescending', function(assert) {
+  assert.expr_equals('from(people).orderByDescending.length', 1);
   assert.expr_equals('from(people).orderByDescending(e=>e.id).select(e=>e.name)', ['alice', 'bob']);
   assert.expr_equals('from(people).orderByDescending(e=>e.id,(a,b)=>-cmp(a,b)).select(e=>e.name)', ['bob', 'alice']);
   assert.expr_nothrow('from(lazy()).orderByDescending(e=>e)', 'is lazy');
 });
 
 QUnit.test('thenBy', function(assert) {
+  assert.expr_equals('from(keyed).orderBy(p => p.pk).thenBy.length', 1);
   assert.expr_equals('from(keyed).orderBy(p => p.pk).thenBy(p => p.sk).select(p => p.name)',
                 ['b', 'd', 'e', 'a', 'c']);
   assert.expr_equals('from(keyed).orderByDescending(p => p.pk).thenBy(p => p.sk).select(p => p.name)',
@@ -306,6 +342,7 @@ QUnit.test('thenBy', function(assert) {
 });
 
 QUnit.test('thenByDescending', function(assert) {
+  assert.expr_equals('from(keyed).orderBy(p => p.pk).thenByDescending.length', 1);
   assert.expr_equals('from(keyed).orderBy(p => p.pk).thenByDescending(p => p.sk).select(p => p.name)',
                 ['d', 'b', 'a', 'e', 'c']);
   assert.expr_equals('from(keyed).orderByDescending(p => p.pk).thenByDescending(p => p.sk).select(p => p.name)',
@@ -325,12 +362,14 @@ QUnit.test('combinations', function(assert) {
 QUnit.module('Transformers');
 
 QUnit.test('defaultIfEmpty', function(assert) {
+  assert.expr_equals('from([1,2]).defaultIfEmpty.length', 1);
   assert.expr_equals('from([1,2]).defaultIfEmpty("a")', [1, 2]);
   assert.expr_equals('from([]).defaultIfEmpty("a")', ['a']);
   assert.expr_nothrow('from(lazy()).defaultIfEmpty("a")', 'is lazy');
 });
 
 QUnit.test('groupBy', function(assert) {
+  assert.expr_equals('from(keyed).groupBy.length', 1);
   assert.expr_equals('from(keyed).groupBy(r=>r.pk).count()', 3);
   assert.expr_equals('from(keyed).groupBy(r=>r.pk).select(g=>g[0])', [5, 4, 6]);
   assert.expr_equals('from(keyed).groupBy(r=>r.pk).select(g=>g[1]).elementAt(0).map(o=>o.name)', ['a', 'e']);
@@ -342,11 +381,13 @@ QUnit.test('groupBy', function(assert) {
 });
 
 QUnit.test('reverse', function(assert) {
+  assert.expr_equals('from(a).reverse.length', 0);
   assert.expr_equals('from(a).reverse()', [4, 3, 2, 1, 0]);
   assert.expr_nothrow('from(lazy()).reverse()', [4, 3, 2, 1, 0], 'is lazy');
 });
 
 QUnit.test('select', function(assert) {
+  assert.expr_equals('from(a).select.length', 1);
   assert.expr_equals('from(a).select(square)', [0, 1, 4, 9, 16]);
   assert.expr_equals('from("abc").select((i,n)=>i+n)', ['a0', 'b1', 'c2']);
   assert.expr_nothrow('from(lazy()).select(square)', 'is lazy');
@@ -354,6 +395,7 @@ QUnit.test('select', function(assert) {
 });
 
 QUnit.test('selectMany', function(assert) {
+  assert.expr_equals('from([{n:[1,2]}, {n:[3,4]}]).selectMany.length', 1);
   assert.expr_equals('from([{n:[1,2]}, {n:[3,4]}]).selectMany(o=>o.n)', [1, 2, 3, 4]);
   assert.expr_equals('from([{n:["a","b"]}, {n:["c"]}]).selectMany((o,i)=>o.n.map(c=>c+i))', ['a0', 'b0', 'c1']);
   assert.expr_equals('from([{s: "a", n:[1,2]}, {s: "b", n:[3,4]}]).selectMany(o=>o.n, (a, b) => a.s + "/" + b)', ['a/1', 'a/2', 'b/3', 'b/4']);
