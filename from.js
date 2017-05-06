@@ -455,11 +455,13 @@
         throw TypeError('comparer must be a function');
       comparer = comparer || Object.is;
       let it1 = this.it, it2 = iterator[Symbol.iterator]();
-      let a = it1.next(), b = it2.next();
-      if (a.done || b.done)
-        return a.done === b.done;
-      if (!comparer(a.value, b.value))
-        return false;
+      while (true) {
+        let a = it1.next(), b = it2.next();
+        if (a.done || b.done)
+          return a.done === b.done;
+        if (!comparer(a.value, b.value))
+          return false;
+      }
       return true;
     }, writable: true, enumerable: false, configurable: true},
 

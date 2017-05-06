@@ -275,6 +275,9 @@ QUnit.test('contains', function(assert) {
 QUnit.test('sequenceEqual', function(assert) {
   assert.expr_equals('from(a).sequenceEqual(a)', true);
   assert.expr_equals('from(a).sequenceEqual([4,3,2,1,0])', false);
+  assert.expr_equals('from(a).sequenceEqual([0,1,2,3,4])', true);
+  assert.expr_equals('from(a).sequenceEqual([4,3,2,1,0])', false);
+  assert.expr_equals('from(a).sequenceEqual([0,1,2,3,5])', false);
   assert.expr_equals('from(a).sequenceEqual([])', false);
   assert.expr_equals('from(a).sequenceEqual(["0", "1", "2", "3", "4"], itype)', true);
 });
