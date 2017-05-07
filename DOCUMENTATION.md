@@ -106,7 +106,7 @@ from([1, 2, 3]).firstOrDefault(NaN); // 1
 from([1, 2, 3]).firstOrDefault(NaN, i => i > 7); // NaN
 ```
 
-### `groupBy(keySelector[, comparer])` &rarr; _Enumerable of [ key, [ values ... ] ]_
+### `groupBy(keySelector[, resultSelector[, comparer]])` &rarr; _Enumerable of [ key, [ values ... ] ]_
 ```js
 from([
   {name: 'daisy', owner: 'alice'},
@@ -115,6 +115,11 @@ from([
 ]).groupBy(pet => pet.owner);
 //  « ["alice", [{name: "daisy", owner: "alice"}, {name: "speak", owner: "alice"}]],
 //    ["bob", [{name: "fido", owner: "bob"}]] »
+from([
+  {name: 'daisy', owner: 'alice'},
+  {name: 'fido', owner: 'bob'},
+  {name: 'speak', owner: 'alice'}
+]).groupBy(pet => pet.owner, (k, rs) => {name: k, count: rs.length});  « ["alice", 2], ["bob", 1] »
 ```
 If specified, _`comparer`_ must be an _equality comparer_ and return `true` if the two arguments should be considered the same, `false` otherwise.
 

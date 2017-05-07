@@ -437,8 +437,14 @@ QUnit.test('groupBy', function(assert) {
   assert.expr_equals('from(keyed).groupBy(r=>r.pk).select(g=>g[1]).elementAt(0).map(o=>o.name)', ['a', 'e']);
   assert.expr_equals('from(keyed).groupBy(r=>r.pk).select(g=>g[1]).elementAt(1).map(o=>o.name)', ['b', 'd']);
   assert.expr_equals('from(keyed).groupBy(r=>r.pk).select(g=>g[1]).elementAt(2).map(o=>o.name)', ['c']);
-  assert.expr_equals('from(keyed).groupBy(r=>r.pk, (a,b)=>!((a+b)%2)).count()', 2);
-  assert.expr_equals('from(keyed).groupBy(r=>r.pk, (a,b)=>!((a+b)%2)).select(g=>g[0])', [5, 4]);
+
+  // With resultSelector
+  assert.expr_equals('from(keyed).groupBy(r=>r.pk, (k,v) => v.length)', [2, 2, 1]);
+
+  // With comparer
+  assert.expr_equals('from(keyed).groupBy(r=>r.pk, undefined, (a,b)=>!((a+b)%2)).count()', 2);
+  assert.expr_equals('from(keyed).groupBy(r=>r.pk, undefined, (a,b)=>!((a+b)%2)).select(g=>g[0])', [5, 4]);
+
   assert.expr_nothrow('from(lazy()).groupBy(odd)', 'is lazy');
 });
 

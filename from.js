@@ -250,10 +250,13 @@
     }
 
     // groupBy(keySelector)
-    // groupBy(keySelector, comparer)
-    groupBy(keySelector, comparer = Object.is) {
+    // groupBy(keySelector, resultSelector)
+    // groupBy(keySelector, resultSelector, comparer)
+    groupBy(keySelector, resultSelector = undefined, comparer = Object.is) {
       if (typeof keySelector !== 'function')
         throw TypeError('keySelector must be a function');
+      if (resultSelector && typeof resultSelector !== 'function')
+        throw TypeError('resultSelector must be a function');
       if (typeof comparer !== 'function')
         throw TypeError('comparer must be a function');
       return new Enumerable((function*(it) {
@@ -264,7 +267,7 @@
           m.get(k).push(i);
         }
         for (let i of m)
-          yield i;
+          yield resultSelector ? resultSelector(i[0], i[1]) : i;
       })(this.it));
     }
 
