@@ -416,12 +416,11 @@
 
     // reverse()
     reverse() {
-      return new Enumerable((function*(it) {
-        const a = Array.from(it);
-        a.reverse();
-        for (let i of a)
-          yield i;
-      })(this.it));
+      return new ArrayEnumerable(() => {
+        const array = Array.from(this.it);
+        array.reverse();
+        return array;
+      });
     }
 
     // select(selector)
@@ -527,15 +526,14 @@
       if (typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
       return new Enumerable((function*(it) {
-        let index = 0;
+        let index = 0, found = false;
         for (let i of it) {
-          if (!predicate(i, index++)) {
+          if (found) {
             yield i;
-            break;
+          } else if (!predicate(i, index++)) {
+            found = true;
+            yield i;
           }
-        }
-        for (let i of it) {
-          yield i;
         }
       })(this.it));
     }
@@ -679,9 +677,18 @@
   };
 
   class ArrayEnumerable extends Enumerable {
-    constructor(array) {
-      super(array[Symbol.iterator]());
-      this.array = array;
+    constructor(lazy_array) {
+      let array_inst;
+      const array_fn = () => {
+        if (!array_inst) array_inst = lazy_array();
+        return array_inst;
+      };
+
+      super((function*() {
+        for (let i of array_fn())
+          yield i;
+      })(array_fn));
+      this.array_fn = array_fn;
     }
 
     // count()
@@ -691,21 +698,24 @@
         throw TypeError('predicate must be a function');
       if (predicate)
         return super.count(predicate);
-      return this.array.length;
+      const array = this.array_fn();
+      return array.length;
     }
 
     // elementAt(index)
     elementAt(index) {
-      if (index < 0 || index >= this.array.length)
+      if (index < 0 || index >= this.array_fn().length)
         throw RangeError('index out of bounds');
-      return this.array[index];
+      const array = this.array_fn();
+      return array[index];
     }
 
     // elementAtOrDefault(index, value)
     elementAtOrDefault(index, value) {
-      if (index < 0 || index >= this.array.length)
+      if (index < 0 || index >= this.array_fn().length)
         return value;
-      return this.array[index];
+      const array = this.array_fn();
+      return array[index];
     }
 
     // last()
@@ -713,8 +723,9 @@
     last(predicate = undefined) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
-      for (let i = this.array.length - 1; i >= 0; --i) {
-        const v = this.array[i];
+      const array = this.array_fn();
+      for (let i = array.length - 1; i >= 0; --i) {
+        const v = array[i];
         if (!predicate || predicate(v))
           return v;
       }
@@ -726,8 +737,9 @@
     lastOrDefault(value, predicate = undefined) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
-      for (let i = this.array.length - 1; i >= 0; --i) {
-        const v = this.array[i];
+      const array = this.array_fn();
+      for (let i = array.length - 1; i >= 0; --i) {
+        const v = array[i];
         if (!predicate || predicate(v))
           return v;
       }
@@ -736,28 +748,28 @@
 
     // skip(n)
     skip(n) {
-      return new Enumerable((function*(a) {
-        for (let i = n; i < a.length; ++i)
-          yield a[i];
-      })(this.array));
+      return new Enumerable((function*(array_fn) {
+        const array = array_fn();
+        for (let i = n; i < array.length; ++i)
+          yield array[i];
+      })(this.array_fn));
     }
   }
 
-  class OrderedEnumerable extends Enumerable {
+  class OrderedEnumerable extends ArrayEnumerable {
     constructor(it, func) {
       const funcs = [func];
-      super((function*() {
-        const a = Array.from(it);
-        a.sort((a, b) => {
+      super(() => {
+        const array = Array.from(it);
+        array.sort((a, b) => {
           for (let func of funcs) {
             const r = func(a, b);
             if (r) return r;
           }
           return 0;
         });
-        for (let e of a)
-          yield e;
-      })());
+        return array;
+      });
       this.funcs = funcs;
     }
 
@@ -788,7 +800,7 @@
 
   global.from = function from(it) {
     if (Array.isArray(it))
-      return new ArrayEnumerable(it);
+      return new ArrayEnumerable(() => it);
     return new Enumerable(it);
   };
   global.Enumerable = Enumerable;
