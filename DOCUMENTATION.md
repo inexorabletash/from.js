@@ -106,7 +106,7 @@ from([1, 2, 3]).firstOrDefault(NaN); // 1
 from([1, 2, 3]).firstOrDefault(NaN, i => i > 7); // NaN
 ```
 
-### `groupBy(keySelector[, resultSelector[, comparer]])` &rarr; _Enumerable of [ key, [ values ... ] ]_
+### `groupBy(keySelector[, elementSelector[, resultSelector[, comparer]]])` &rarr; _Enumerable of [ key, [ values ... ] ]_
 ```js
 from([
   {name: 'daisy', owner: 'alice'},
@@ -119,9 +119,16 @@ from([
   {name: 'daisy', owner: 'alice'},
   {name: 'fido', owner: 'bob'},
   {name: 'speak', owner: 'alice'}
-]).groupBy(pet => pet.owner, (k, rs) => {name: k, count: rs.length});  « ["alice", 2], ["bob", 1] »
+]).groupBy(pet => pet.owner, e => e.name); « ["alice", ["daisy", "speak"]], ["bob", ["fido"]] »
+from([
+  {name: 'daisy', owner: 'alice'},
+  {name: 'fido', owner: 'bob'},
+  {name: 'speak', owner: 'alice'}
+]).groupBy(pet => pet.owner, undefined, (k, rs) => {name: k, count: rs.length});  « ["alice", 2], ["bob", 1] »
 ```
 If specified, _`comparer`_ must be an _equality comparer_ and return `true` if the two arguments should be considered the same, `false` otherwise.
+
+Pass `undefined` for any unneeded argument.
 
 ### `intersect(iterable[, comparer])` &rarr; _Enumerable_
 ```js

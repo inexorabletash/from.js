@@ -250,11 +250,14 @@
     }
 
     // groupBy(keySelector)
-    // groupBy(keySelector, resultSelector)
-    // groupBy(keySelector, resultSelector, comparer)
-    groupBy(keySelector, resultSelector = undefined, comparer = Object.is) {
+    // groupBy(keySelector, elementSelector)
+    // groupBy(keySelector, elementSelector, resultSelector)
+    // groupBy(keySelector, elementSelector, resultSelector, comparer)
+    groupBy(keySelector, elementSelector = undefined, resultSelector = undefined, comparer = Object.is) {
       if (typeof keySelector !== 'function')
         throw TypeError('keySelector must be a function');
+      if (elementSelector && typeof elementSelector !== 'function')
+        throw TypeError('elementSelector must be a function');
       if (resultSelector && typeof resultSelector !== 'function')
         throw TypeError('resultSelector must be a function');
       if (typeof comparer !== 'function')
@@ -264,7 +267,7 @@
         for (let i of it) {
           const k = keySelector(i);
           if (!m.has(k)) m.set(k, []);
-          m.get(k).push(i);
+          m.get(k).push(elementSelector ? elementSelector(i) : i);
         }
         for (let i of m)
           yield resultSelector ? resultSelector(i[0], i[1]) : i;
