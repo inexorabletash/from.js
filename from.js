@@ -689,12 +689,9 @@
     count(predicate = undefined) {
       if (predicate && typeof predicate !== 'function')
         throw TypeError('predicate must be a function');
-      if (!predicate)
-        return this.array.length;
-      let n = 0;
-      for (let i = 0; i < this.array.length; ++i)
-        if (predicate(this.array[i])) ++n;
-      return n;
+      if (predicate)
+        return super.count(predicate);
+      return this.array.length;
     }
 
     // elementAt(index)
